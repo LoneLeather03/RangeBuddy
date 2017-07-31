@@ -1,6 +1,8 @@
 package edu.cnm.deepdive.rangebuddy.entities;
 
+import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 /**
@@ -42,6 +44,9 @@ public class Engagement {
 
     @DatabaseField(columnName = "TARGET_STYLE_ID", canBeNull = false, foreign = true)
     private TargetStyle targetStyle;
+
+    @ForeignCollectionField(eager = false)
+    private ForeignCollection<Shot> shots;
 
     public Engagement() {
 

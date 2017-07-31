@@ -1,6 +1,8 @@
 package edu.cnm.deepdive.rangebuddy.entities;
 
+import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 /**
@@ -20,6 +22,14 @@ public class TargetStyle {
 
     @DatabaseField(columnName = "WIDTH")
     private int width;
+
+    @Override
+    public String toString() {
+        return getStyle();
+    }
+
+    @ForeignCollectionField(eager = false )
+    private ForeignCollection<Shot> target;
 
     public TargetStyle() {
 
