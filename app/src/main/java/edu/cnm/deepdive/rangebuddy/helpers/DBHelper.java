@@ -5,6 +5,7 @@ package edu.cnm.deepdive.rangebuddy.helpers;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -33,13 +34,13 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     private Dao<Engagement, Integer> engagementDao = null;
-    private RuntimeExceptionDao<Engagement, Integer> engagementRuntimeDao = null;
+
 
     private Dao<Shot, Integer> shotDao = null;
-    private RuntimeExceptionDao<Shot, Integer> shotRuntimeDao = null;
+
 
     private Dao<TargetStyle, Integer> targetDao = null;
-    private RuntimeExceptionDao<TargetStyle, Integer> targetRuntimeDao = null;
+
 
     private static ConnectionSource source;
 
@@ -94,20 +95,110 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
             style.setStyle("NRA 600yd MR-1");
             style.setHeight(64);
             style.setWidth(72);
-            TargetStyleDao.getInstance().create(style);
+            getTargetStyleDao().create(style);
             style = new TargetStyle();
             style.setStyle("NRA 500yd MR-65");
             style.setHeight(37);
             style.setWidth(37);
-            TargetStyleDao.getInstance().create(style);
+            getTargetStyleDao().create(style);
             style = new TargetStyle();
+            style.setStyle("NRA 300yd MR-63");
+            style.setHeight(35);
+            style.setWidth(35);
+            getTargetStyleDao().create(style);
+            style = new TargetStyle();
+            style.setStyle("NRA 200yd SR-200");
+            style.setHeight(40);
+            style.setWidth(42);
+            getTargetStyleDao().create(style);
+            style = new TargetStyle();
+            style.setStyle("NRA 100yd SR-1");
+            style.setHeight(21);
+            style.setWidth(21);
+            getTargetStyleDao().create(style);
+
+            Engagement engagements = new Engagement();
+            engagements.setCaliber("5.56x45");
+            engagements.setGrains(62);
+            engagements.setVelocity(2927);
+            engagements.setDistance(200);
+            engagements.setWindDir(270);
+            engagements.setWindSpeed(15);
+            engagements.setClickValue(.25);
+            engagements.setZero(200);
+            engagements.setWindageAdj(3);
+            engagements.setElevationAdj(3);
+            engagements.setTargetStyle(style);
+            getEngagementDao().create(engagements);
+            engagements = new Engagement();
+            engagements.setCaliber("5.56x45");
+            engagements.setGrains(62);
+            engagements.setVelocity(2927);
+            engagements.setDistance(200);
+            engagements.setWindDir(270);
+            engagements.setWindSpeed(15);
+            engagements.setClickValue(.25);
+            engagements.setZero(200);
+            engagements.setWindageAdj(2);
+            engagements.setElevationAdj(1);
+            engagements.setTargetStyle(style);
+            getEngagementDao().create(engagements);
+            engagements = new Engagement();
+            engagements.setCaliber("5.56x45");
+            engagements.setGrains(62);
+            engagements.setVelocity(2927);
+            engagements.setDistance(200);
+            engagements.setWindDir(270);
+            engagements.setWindSpeed(15);
+            engagements.setClickValue(.25);
+            engagements.setZero(200);
+            engagements.setWindageAdj(1);
+            engagements.setElevationAdj(2);
+            engagements.setTargetStyle(style);
+            getEngagementDao().create(engagements);
 
 
-
-
+            Shot shot = new Shot();
+            shot.setSequence(1);
+            shot.setXCoordinate(4);
+            shot.setYCoordinate(8);
+            shot.setEngagement(engagements);
+            getShotDao().create(shot);
+            shot = new Shot();
+            shot.setSequence(2);
+            shot.setXCoordinate(3);
+            shot.setYCoordinate(6);
+            shot.setEngagement(engagements);
+            getShotDao().create(shot);
+            shot = new Shot();
+            shot.setSequence(3);
+            shot.setXCoordinate(1);
+            shot.setYCoordinate(2);
+            shot.setEngagement(engagements);
+            getShotDao().create(shot);
 
         }
 
+        public synchronized Dao<TargetStyle, Integer> getTargetStyleDao() throws SQLException {
+            if (targetDao == null) {
+                targetDao = getDao(TargetStyle.class);
+            }
+            return targetDao;
+        }
+
+    Dao<Shot, Integer> getShotDao() throws SQLException {
+        if (shotDao == null) {
+            shotDao = getDao(Shot.class);
+        }
+        return shotDao;
+    }
+
+    Dao<Engagement, Integer> getEngagementDao() throws SQLException {
+        if (engagementDao == null) {
+            engagementDao = getDao(Engagement.class);
+        }
+        return engagementDao;
+    }
 
     public ArrayList<Cursor> getData(String Query){
         //get writable database
@@ -148,66 +239,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         }
     }
 
-    public static class TargetStyleDao{
 
-        private static class Helper {
-
-            private static final Dao<TargetStyle, Integer> INSTANCE;
-
-            static {
-            try {
-               INSTANCE = DaoManager.createDao(source, TargetStyle.class);
-                } catch (SQLException e) {
-                throw new RuntimeException();
-                }
-            }
-        }
-        public static Dao <TargetStyle, Integer> getInstance() {
-            return Helper.INSTANCE;
-        }
-    }
-
-    public static class EngagementDao{
-
-        private static class Helper {
-
-            private static final Dao<Engagement, Integer> INSTANCE;
-
-            static {
-                try {
-                    INSTANCE = DaoManager.createDao(source, Engagement.class);
-                } catch (SQLException e) {
-                    throw new RuntimeException();
-                }
-
-            }
-        }
-
-        public static Dao <Engagement, Integer> getInstance() {
-            return Helper.INSTANCE;
-        }
-    }
-
-    public static class ShotDao{
-
-        private static class Helper {
-
-            private static final Dao<Shot, Integer> INSTANCE;
-
-            static {
-                try {
-                    INSTANCE = DaoManager.createDao(source, Shot.class);
-                } catch (SQLException e) {
-                    throw new RuntimeException();
-                }
-
-            }
-        }
-
-        public static Dao <Shot, Integer> getInstance() {
-            return Helper.INSTANCE;
-        }
-    }
 
 }
 

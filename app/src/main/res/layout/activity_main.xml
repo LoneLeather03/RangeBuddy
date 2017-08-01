@@ -24,13 +24,36 @@
         tools:layout_editor_absoluteY="0dp"
         tools:layout_editor_absoluteX="0dp" />
 
+    <Button
+        android:id="@+id/listButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="list" />
+
+    <Button
+        android:id="@+id/down"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:rotation="180"
+        android:background="@drawable/arrow_up" />
+
+    <Button
+        android:id="@+id/up"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="@drawable/arrow_up"
+        app:layout_constraintTop_toBottomOf="@id/down"/>
+
+
     <ImageView
-        android:layout_width="252dp"
-        android:layout_height="248dp"
-        android:src="@drawable/target1"
-        tools:layout_editor_absoluteX="338dp"
+        android:layout_width="491dp"
+        android:layout_height="445dp"
+        android:src="@drawable/nra_600_mr1"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="-83dp" />
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="1dp" />
 
 
 

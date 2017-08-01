@@ -29,7 +29,7 @@ public class TargetStyle {
     }
 
     @ForeignCollectionField(eager = false )
-    private ForeignCollection<Shot> target;
+    private ForeignCollection<Engagement> engagements;
 
     public TargetStyle() {
 

@@ -16,13 +16,16 @@ public class Engagement {
     private int id;
 
     @DatabaseField(columnName = "CALIBER")
-    private int caliber;
+    private String caliber;
 
     @DatabaseField(columnName = "GRAINS")
     private int grains;
 
     @DatabaseField(columnName = "VELOCITY")
     private int velocity;
+
+    @DatabaseField(columnName = "DISTANCE")
+    private int distance;
 
     @DatabaseField(columnName = "WIND_DIR")
     private int windDir;
@@ -31,7 +34,7 @@ public class Engagement {
     private int windSpeed;
 
     @DatabaseField(columnName = "CLICK_VALUE")
-    private int clickValue;
+    private double clickValue;
 
     @DatabaseField(columnName = "ZERO")
     private int zero;
@@ -57,18 +60,18 @@ public class Engagement {
         return id;
     }
 
-    public int getCaliber() {
+    public String getCaliber() {
         return caliber;
     }
 
-    public void setCaliber(int caliber) {
+    public void setCaliber(String caliber) {
         this.caliber = caliber;
     }
 
-    public int getGrains() { return grains; }
+    public int getDistance() { return distance; }
 
-    public void setGrains(int grains) {
-        this.grains = grains;
+    public void setDistance(int distance) {
+        this.distance = distance;
     }
 
     public int getVelocity() {
@@ -79,27 +82,33 @@ public class Engagement {
         this.velocity = velocity;
     }
 
-    public int getWind_dir() {
+    public int getGrains() { return grains; }
+
+    public void setGrains(int grains) {
+        this.grains = grains;
+    }
+
+    public int getWindDir() {
         return windDir;
     }
 
-    public void setWindDir(int wind_dir) {
-        this.windDir = wind_dir;
+    public void setWindDir(int windDir) {
+        this.windDir = windDir;
     }
 
     public int getWindSpeed() {
         return windSpeed;
     }
 
-    public void setWindSpeed(int wind_speed) {
-        this.windSpeed = wind_speed;
+    public void setWindSpeed(int windSpeed) {
+        this.windSpeed = windSpeed;
     }
 
-    public int getClickValue() {
+    public double getClickValue() {
         return clickValue;
     }
 
-    public void setClickValue(int click_value) {
+    public void setClickValue(double click_value) {
         this.clickValue = click_value;
     }
 

@@ -26,38 +26,13 @@ import edu.cnm.deepdive.rangebuddy.views.TestActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    CustomDrawableView mCustomDrawableView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_main);
         DBHelper helper = new DBHelper(getApplicationContext());
         helper.getWritableDatabase().close();
-
-
-//        try {
-//            Dao<TargetStyle, Integer> targetDao = helper.getDao(TargetStyle.class);
-////            TargetStyle target = new TargetStyle();
-////            target.setStyle("NRA 600yd MR-1");
-////            target.setHeight(64);
-////            target.setWidth(72);
-////            //   } catch (SQLException ex) {
-////            //      ex.printStackTrace();
-////
-////            targetDao.create(target);
-//
-//            QueryBuilder<TargetStyle, Integer> builder = targetDao.queryBuilder();
-//            List<TargetStyle> result = targetDao.query(builder.prepare());
-//            for (TargetStyle t : result) {
-//                Log.d("database", t.getStyle());
-//
-//            }
-//        } catch (SQLException ex) {
-//            ex.printStackTrace();
-//        }
-
-
-
 
         Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -66,8 +41,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(dbmanager);
             }
         });
-
-
 
         Button listButton = (Button) findViewById(R.id.listButton);
         listButton.setOnClickListener(new View.OnClickListener(){
