@@ -16,10 +16,10 @@ public class Shot {
     private int id;
 
     @DatabaseField(columnName = "X_COORDINATE")
-    private int xCoordinate;
+    private float xOffset;
 
     @DatabaseField(columnName = "Y_COORDINATE")
-    private int yCoordinate;
+    private float yOffset;
 
     @DatabaseField(columnName = "SEQUENCE")
     private int sequence;
@@ -35,20 +35,20 @@ public class Shot {
         return id;
     }
 
-    public int getXCoordinate() {
-        return xCoordinate;
+    public float getOffset() {
+        return xOffset;
     }
 
-    public void setXCoordinate(int x_coordinate) {
-        this.xCoordinate = x_coordinate;
+    public void setxOffset(float xOffset) {
+        this.xOffset = xOffset;
     }
 
-    public int getYCoordinate() {
-        return yCoordinate;
+    public float getYOffset() {
+        return yOffset;
     }
 
-    public void setYCoordinate(int y_coordinate) {
-        this.yCoordinate = y_coordinate;
+    public void setyOffset(float yOffset) {
+        this.yOffset = yOffset;
     }
 
     public int getSequence() {

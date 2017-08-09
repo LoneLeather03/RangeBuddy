@@ -95,26 +95,31 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
             style.setStyle("NRA 600yd MR-1");
             style.setHeight(64);
             style.setWidth(72);
+            style.setImage("nra_600_mr1");
             getTargetStyleDao().create(style);
             style = new TargetStyle();
             style.setStyle("NRA 500yd MR-65");
             style.setHeight(37);
             style.setWidth(37);
+            style.setImage("nra_500_mr65");
             getTargetStyleDao().create(style);
             style = new TargetStyle();
             style.setStyle("NRA 300yd MR-63");
             style.setHeight(35);
             style.setWidth(35);
+            style.setImage("nra_300_mr63");
             getTargetStyleDao().create(style);
             style = new TargetStyle();
             style.setStyle("NRA 200yd SR-200");
             style.setHeight(40);
             style.setWidth(42);
+            style.setImage("nra_sr200");
             getTargetStyleDao().create(style);
             style = new TargetStyle();
             style.setStyle("NRA 100yd SR-1");
             style.setHeight(21);
             style.setWidth(21);
+            style.setImage("nra_100_sr1");
             getTargetStyleDao().create(style);
 
             Engagement engagements = new Engagement();
@@ -160,20 +165,20 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
 
             Shot shot = new Shot();
             shot.setSequence(1);
-            shot.setXCoordinate(4);
-            shot.setYCoordinate(8);
+            shot.setxOffset(4);
+            shot.setxOffset(8);
             shot.setEngagement(engagements);
             getShotDao().create(shot);
             shot = new Shot();
             shot.setSequence(2);
-            shot.setXCoordinate(3);
-            shot.setYCoordinate(6);
+            shot.setxOffset(3);
+            shot.setyOffset(6);
             shot.setEngagement(engagements);
             getShotDao().create(shot);
             shot = new Shot();
             shot.setSequence(3);
-            shot.setXCoordinate(1);
-            shot.setYCoordinate(2);
+            shot.setxOffset(1);
+            shot.setyOffset(2);
             shot.setEngagement(engagements);
             getShotDao().create(shot);
 

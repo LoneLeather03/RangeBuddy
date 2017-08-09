@@ -23,6 +23,9 @@ public class TargetStyle {
     @DatabaseField(columnName = "WIDTH")
     private int width;
 
+    @DatabaseField(columnName = "IMAGE")
+    private String image;
+
     @Override
     public String toString() {
         return getStyle();
@@ -62,5 +65,9 @@ public class TargetStyle {
     public void setWidth(int width) {
         this.width = width;
     }
+
+    public String getImage() { return image; }
+
+    public void setImage(String image) { this.image = image; }
 
 }
