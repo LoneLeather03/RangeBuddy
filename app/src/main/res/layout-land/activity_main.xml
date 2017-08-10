@@ -21,7 +21,7 @@
         app:layout_constraintLeft_toLeftOf="parent"/>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/DBMButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -31,6 +31,25 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:visibility="visible"
+        android:max="100"
+        android:progress="50"
+        app:layout_constraintLeft_toRightOf="@id/listButton"
+        app:layout_constraintRight_toLeftOf="@+id/verticalLayout"
+        app:layout_constraintTop_toBottomOf="@id/listButton" />
+
+    <TextView
+        android:id="@+id/seekBarText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1.5"
+        app:layout_constraintLeft_toRightOf="@id/listButton"
+        app:layout_constraintRight_toLeftOf="@id/verticalLayout"
+        app:layout_constraintTop_toBottomOf="@id/seekBar" />
 
     <ImageView
         android:id="@+id/target"
@@ -42,14 +61,33 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-
-    <LinearLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/verticalLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintRight_toLeftOf="@+id/target"
-        tools:layout_editor_absoluteY="0dp">
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioGroup
+            android:id="@+id/length"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RadioButton
+                android:id="@+id/length18"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text='18" barrel' />
+
+            <RadioButton
+                android:id="@+id/length20"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text='20" barrel' />
+        </RadioGroup>
 
         <ImageView
             android:id="@+id/Compass"
@@ -63,14 +101,31 @@
         <TextView
             android:id="@+id/dirSpeedValues"
             android:layout_width="218dp"
-            android:layout_height="99dp"
+            android:layout_height="72dp"
             android:text="Touch compass for values" />
 
+        <TextView
+            android:id="@+id/targetSelect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select target from dropdown" />
+
         <Spinner
-            android:id="@+id/spinner"
+            android:id="@+id/targetStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/dirSpeedValues" />
+
+        <TextView
+            android:id="@+id/grainsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select bullet weight(grains)" />
+
+        <Spinner
+            android:id="@+id/bulletWeight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
 
     </LinearLayout>

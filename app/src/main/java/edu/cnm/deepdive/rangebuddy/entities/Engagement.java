@@ -18,6 +18,9 @@ public class Engagement {
     @DatabaseField(columnName = "CALIBER")
     private String caliber;
 
+    @DatabaseField(columnName = "BARREL_LENGTH")
+    private int length;
+
     @DatabaseField(columnName = "GRAINS")
     private int grains;
 
@@ -67,6 +70,10 @@ public class Engagement {
     public void setCaliber(String caliber) {
         this.caliber = caliber;
     }
+
+    public int getLength() { return length; }
+
+    public void setLength(int length) { this.length = length; }
 
     public int getDistance() { return distance; }
 
@@ -143,6 +150,7 @@ public class Engagement {
     public void setTargetStyle(TargetStyle targetStyle) {
         this.targetStyle = targetStyle;
     }
+
 
 }
 

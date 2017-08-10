@@ -1,12 +1,4 @@
 <resources>
     <string name="app_name">RangeBuddy</string>
 
-<string-array name="targets_array">
-    <item>SR-1 100yd</item>
-    <item>SR-200 200yd</item>
-    <item>MR-63 300yd</item>
-    <item>MR-65 500yd</item>
-    <item>MR-1 600yd</item>
-
-</string-array>
 </resources>

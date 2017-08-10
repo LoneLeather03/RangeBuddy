@@ -124,6 +124,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
 
             Engagement engagements = new Engagement();
             engagements.setCaliber("5.56x45");
+            engagements.setLength(20);
             engagements.setGrains(62);
             engagements.setVelocity(2927);
             engagements.setDistance(200);
@@ -137,6 +138,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
             getEngagementDao().create(engagements);
             engagements = new Engagement();
             engagements.setCaliber("5.56x45");
+            engagements.setLength(20);
             engagements.setGrains(62);
             engagements.setVelocity(2927);
             engagements.setDistance(200);
@@ -150,6 +152,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
             getEngagementDao().create(engagements);
             engagements = new Engagement();
             engagements.setCaliber("5.56x45");
+            engagements.setLength(20);
             engagements.setGrains(62);
             engagements.setVelocity(2927);
             engagements.setDistance(200);
@@ -191,14 +194,14 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
             return targetDao;
         }
 
-    Dao<Shot, Integer> getShotDao() throws SQLException {
+    public synchronized Dao<Shot, Integer> getShotDao() throws SQLException {
         if (shotDao == null) {
             shotDao = getDao(Shot.class);
         }
         return shotDao;
     }
 
-    Dao<Engagement, Integer> getEngagementDao() throws SQLException {
+    public synchronized Dao<Engagement, Integer> getEngagementDao() throws SQLException {
         if (engagementDao == null) {
             engagementDao = getDao(Engagement.class);
         }
