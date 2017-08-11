@@ -37,7 +37,7 @@ import static java.lang.Math.round;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, SeekBar.OnSeekBarChangeListener {
 
-    private static final double TOLERANCE = 0.1d ;
+    private static final double TOLERANCE = 0.1d;
     //    private static final char[] ARROWS = {'\u21D1', '\u21D7', '\u21D2', '\u21D8', '\u21D3', '\u21D9', '\u21D0', '\u21D6'};
     private int direction = 0;
     ArrayList<float[]> shots = new ArrayList<>();
@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
 
         getHelper().getWritableDatabase().close();
@@ -166,22 +165,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Switch removeMode = (Switch) findViewById(R.id.removeSwitch);
                 boolean inRemoveMode = removeMode.isChecked();
 
-                    if (inRemoveMode) {
-                        double closestDistance = Double.MAX_VALUE;
-                        float[] shotToRemove = null;
-                        for (float[] shot : shots) {
-                            double d = Math.hypot(xOffset -shot[0], yOffset -shot[1]);
-                            if (d < TOLERANCE && d < closestDistance) {
-                                closestDistance = d;
-                                shotToRemove = shot;
-                            }
+                if (inRemoveMode) {
+                    double closestDistance = Double.MAX_VALUE;
+                    float[] shotToRemove = null;
+                    for (float[] shot : shots) {
+                        double d = Math.hypot(xOffset - shot[0], yOffset - shot[1]);
+                        if (d < TOLERANCE && d < closestDistance) {
+                            closestDistance = d;
+                            shotToRemove = shot;
                         }
-                        if (shotToRemove != null) {
-                            shots.remove(shotToRemove);
-                        }
-                    } else {
-                        shots.add(new float[]{xOffset, yOffset});
                     }
+                    if (shotToRemove != null) {
+                        shots.remove(shotToRemove);
+                    }
+                } else {
+                    shots.add(new float[]{xOffset, yOffset});
+                }
                 float xCenter = width / 2.0f;
                 float yCenter = height / 2.0f;
                 float deltaX = event.getX() - xCenter;
@@ -206,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 //                paint.setStrokeWidth(10);
 //                c.scale(targetView.getScaleX(), targetView.getScaleY());
                 for (float[] shot : shots) {
-                            c.drawOval(c.getWidth() * (shot[0] + 0.5f) - 5,
+                    c.drawOval(c.getWidth() * (shot[0] + 0.5f) - 5,
                             c.getHeight() * (shot[1] + 0.5f) - 5,
                             c.getWidth() * (shot[0] + 0.5f) + 5,
                             c.getHeight() * (shot[1] + 0.5f) + 5, paint);
@@ -219,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
-         ((SeekBar) findViewById(R.id.windageValue)).setOnSeekBarChangeListener(this);
+        ((SeekBar) findViewById(R.id.windageValue)).setOnSeekBarChangeListener(this);
 
         ((SeekBar) findViewById(R.id.elevationValue)).setOnSeekBarChangeListener(this);
 
@@ -266,11 +265,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     protected void weight() {
 
-            Spinner bulletWeight = (Spinner) findViewById(R.id.bulletWeight);
-            String[] weights = getResources().getStringArray(R.array.bulletWeights);
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, weights);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            bulletWeight.setAdapter(adapter);
+        Spinner bulletWeight = (Spinner) findViewById(R.id.bulletWeight);
+        String[] weights = getResources().getStringArray(R.array.bulletWeights);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, weights);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        bulletWeight.setAdapter(adapter);
     }
 
     protected void distance() {
@@ -324,11 +323,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        TextView view = (TextView) findViewById(R.id.windageValueDisplay);
-        view.setText(String.format("%3.2f", (progress + 100) / 100f));
-        TextView view1 = (TextView) findViewById(R.id.elevationValueDisplay);
-        view1.setText(String.format("%3.2f", (progress + 100) / 100f));
-
+        switch (seekBar.getId()) {
+            case R.id.windageValue:
+                TextView view = (TextView) findViewById(R.id.windageValueDisplay);
+                view.setText(String.format("%3.2f", (progress + 100) / 100f));
+                break;
+            case R.id.elevationValue:
+                TextView view1 = (TextView) findViewById(R.id.elevationValueDisplay);
+                view1.setText(String.format("%3.2f", (progress + 100) / 100f));
+                break;
+        }
 
     }
 
@@ -337,10 +341,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
+
+
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
     }
+
+
+
 }
 
 
