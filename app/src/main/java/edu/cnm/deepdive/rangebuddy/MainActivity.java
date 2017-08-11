@@ -14,11 +14,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -33,13 +33,12 @@ import edu.cnm.deepdive.rangebuddy.helpers.AndroidDatabaseManager;
 import edu.cnm.deepdive.rangebuddy.helpers.DBHelper;
 import edu.cnm.deepdive.rangebuddy.views.TestActivity;
 
-import static edu.cnm.deepdive.rangebuddy.R.array.bulletWeights;
-import static edu.cnm.deepdive.rangebuddy.R.id.targetStyle;
 import static java.lang.Math.round;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, SeekBar.OnSeekBarChangeListener {
 
-//    private static final char[] ARROWS = {'\u21D1', '\u21D7', '\u21D2', '\u21D8', '\u21D3', '\u21D9', '\u21D0', '\u21D6'};
+    private static final double TOLERANCE = 0.1d ;
+    //    private static final char[] ARROWS = {'\u21D1', '\u21D7', '\u21D2', '\u21D8', '\u21D3', '\u21D9', '\u21D0', '\u21D6'};
     private int direction = 0;
     ArrayList<float[]> shots = new ArrayList<>();
     ArrayList<String> grains = new ArrayList<>();
@@ -56,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         getHelper().getWritableDatabase().close();
         fuckYou();
         weight();
+        distance();
 
         Button button = (Button) findViewById(R.id.DBMButton);
         button.setOnClickListener(new View.OnClickListener() {
@@ -73,8 +73,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
+        Button saveButton = (Button) findViewById(R.id.saveEngagement);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
 
+            }
+        });
 
+        Button deleteButton = (Button) findViewById(R.id.delete);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+            }
+        });
+
+        Button viewButton = (Button) findViewById(R.id.viewEngagements);
+        viewButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+            }
+        });
 
         final ImageView iv = (ImageView) findViewById(R.id.Compass);
 
@@ -144,7 +162,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 float xOffset = (xShot / width) - 0.5f;
                 float yOffset = (yShot / height) - 0.5f;
                 //TODO iterate over shots to see if distance between any shot and xOffset yOffset less than some tolerance.
-                shots.add(new float[]{xOffset, yOffset});
+
+                Switch removeMode = (Switch) findViewById(R.id.removeSwitch);
+                boolean inRemoveMode = removeMode.isChecked();
+
+                    if (inRemoveMode) {
+                        double closestDistance = Double.MAX_VALUE;
+                        float[] shotToRemove = null;
+                        for (float[] shot : shots) {
+                            double d = Math.hypot(xOffset -shot[0], yOffset -shot[1]);
+                            if (d < TOLERANCE && d < closestDistance) {
+                                closestDistance = d;
+                                shotToRemove = shot;
+                            }
+                        }
+                        if (shotToRemove != null) {
+                            shots.remove(shotToRemove);
+                        }
+                    } else {
+                        shots.add(new float[]{xOffset, yOffset});
+                    }
                 float xCenter = width / 2.0f;
                 float yCenter = height / 2.0f;
                 float deltaX = event.getX() - xCenter;
@@ -182,7 +219,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
-         ((SeekBar) findViewById(R.id.seekBar)).setOnSeekBarChangeListener(this);
+         ((SeekBar) findViewById(R.id.windageValue)).setOnSeekBarChangeListener(this);
+
+        ((SeekBar) findViewById(R.id.elevationValue)).setOnSeekBarChangeListener(this);
 
     }
 
@@ -234,7 +273,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             bulletWeight.setAdapter(adapter);
     }
 
+    protected void distance() {
 
+        Spinner bulletWeight = (Spinner) findViewById(R.id.distance);
+        String[] distances = getResources().getStringArray(R.array.distances);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, distances);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        bulletWeight.setAdapter(adapter);
+    }
 
 
     @Override
@@ -278,8 +324,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        TextView view = (TextView) findViewById(R.id.seekBarText);
+        TextView view = (TextView) findViewById(R.id.windageValueDisplay);
         view.setText(String.format("%3.2f", (progress + 100) / 100f));
+        TextView view1 = (TextView) findViewById(R.id.elevationValueDisplay);
+        view1.setText(String.format("%3.2f", (progress + 100) / 100f));
+
+
     }
 
     @Override
