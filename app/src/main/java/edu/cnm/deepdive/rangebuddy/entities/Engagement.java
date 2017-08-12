@@ -4,16 +4,26 @@ import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+
 
 /**
  * Created by David S. Martinez on 7/26/2017.
  */
 
-@DatabaseTable(tableName = "ENGAGEMENT")
-public class Engagement {
+    @DatabaseTable(tableName = "ENGAGEMENT")
+    public class Engagement {
 
     @DatabaseField(columnName = "ENGAGEMENT_ID", generatedId = true)
     private int id;
+
+    @DatabaseField(columnName = "CREATED", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+         format = "yyyy-MM-dd HH:mm:ss", readOnly = true)
+    private java.sql.Timestamp created;
+
+    @DatabaseField(columnName = "ENGAGEMENT_NAME")
+    private String nameOfEngagement;
 
     @DatabaseField(columnName = "CALIBER")
     private String caliber;
@@ -36,11 +46,11 @@ public class Engagement {
     @DatabaseField(columnName = "WIND_SPEED")
     private int windSpeed;
 
-    @DatabaseField(columnName = "CLICK_VALUE")
-    private double clickValue;
+    @DatabaseField(columnName = "CLICK_VALUE_WINDAGE")
+    private double clickValueWindage;
 
-    @DatabaseField(columnName = "ZERO")
-    private int zero;
+    @DatabaseField(columnName = "CLICK_VALUE_ELEVATION")
+    private double clickValueElevation;
 
     @DatabaseField(columnName = "WINDAGE_ADJ")
     private int windageAdj;
@@ -54,6 +64,12 @@ public class Engagement {
     @ForeignCollectionField(eager = false)
     private ForeignCollection<Shot> shots;
 
+    @Override
+    public String toString() {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        return String.format("%s: %s", format.format(getCreated()), getNameOfEngagement());
+    }
+
     public Engagement() {
 
     }
@@ -62,6 +78,12 @@ public class Engagement {
     public int getId() {
         return id;
     }
+
+    public Timestamp getCreated() { return created; }
+
+    public String getNameOfEngagement() { return nameOfEngagement; }
+
+    public void setNameOfEngagement(String nameOfEngagement) { this.nameOfEngagement = nameOfEngagement; }
 
     public String getCaliber() {
         return caliber;
@@ -111,21 +133,22 @@ public class Engagement {
         this.windSpeed = windSpeed;
     }
 
-    public double getClickValue() {
-        return clickValue;
+    public double getClickValueWindage() {
+        return clickValueWindage;
     }
 
-    public void setClickValue(double click_value) {
-        this.clickValue = click_value;
+    public void setClickValueWindage(double click_value) {
+        this.clickValueWindage = click_value;
     }
 
-    public int getZero() {
-        return zero;
+    public double getClickValueElevate() {
+        return clickValueElevation;
     }
 
-    public void setZero(int zero) {
-        this.zero = zero;
+    public void setClickValueElevate(double click_value) {
+        this.clickValueElevation = click_value;
     }
+
 
     public int getWindagAdj() {
         return windageAdj;

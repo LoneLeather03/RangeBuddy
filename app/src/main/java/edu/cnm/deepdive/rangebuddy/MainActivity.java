@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
@@ -23,16 +24,20 @@ import android.widget.TextView;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.QueryBuilder;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.cnm.deepdive.rangebuddy.entities.Engagement;
+import edu.cnm.deepdive.rangebuddy.entities.Shot;
 import edu.cnm.deepdive.rangebuddy.entities.TargetStyle;
 import edu.cnm.deepdive.rangebuddy.helpers.AndroidDatabaseManager;
 import edu.cnm.deepdive.rangebuddy.helpers.DBHelper;
 import edu.cnm.deepdive.rangebuddy.views.TestActivity;
 
+import static edu.cnm.deepdive.rangebuddy.R.id.length20;
 import static java.lang.Math.round;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, SeekBar.OnSeekBarChangeListener {
@@ -44,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     ArrayList<String> grains = new ArrayList<>();
     TargetStyle currentStyle = null;
     Engagement currentWeight = null;
+    double speed = 0;
+    double angle = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         getHelper().getWritableDatabase().close();
         fuckYou();
-        weight();
+        loadNameSpinner();
         distance();
 
         Button button = (Button) findViewById(R.id.DBMButton);
@@ -75,6 +82,48 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Button saveButton = (Button) findViewById(R.id.saveEngagement);
         saveButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                try {
+                    Dao<Engagement, Integer> engagementDao = getHelper().getEngagementDao();
+                    Dao<Shot, Integer> shotDao = getHelper().getShotDao();
+                    Engagement engagement = new Engagement();
+                    EditText name = (EditText) findViewById(R.id.name);
+                    engagement.setNameOfEngagement(name.getText().toString());
+                    Spinner distanceSpinner = (Spinner) findViewById(R.id.distance);
+                    engagement.setDistance(Integer.parseInt(distanceSpinner.getSelectedItem().toString()));
+                    //TODO fill in remaining engagement fields
+
+                    RadioButton length16 = (RadioButton) findViewById(R.id.length16);
+                    if (length16.isChecked()) {
+                        engagement.setLength(16);
+                    } else {
+                        engagement.setLength(20);
+                    }
+                    ImageView compass = (ImageView) findViewById(R.id.Compass);
+                    engagement.setWindDir((int)Math.round(angle));
+                    engagement.setWindSpeed((int) speed);
+                    SeekBar rawWindage = ((SeekBar) findViewById(R.id.windageValue));
+                    double realWindage = rawWindage.getProgress() / 100d + 1;
+                    engagement.setClickValueWindage(realWindage);
+                    SeekBar rawElevation = ((SeekBar) findViewById(R.id.elevationValue));
+                    double realElevation = rawElevation.getProgress() / 100d + 1;
+                    engagement.setClickValueElevate(realElevation);
+                    Spinner style = (Spinner) findViewById(R.id.targetStyle);
+                    engagement.setTargetStyle(currentStyle);
+                    engagementDao.create(engagement);
+                    for (int i = 0; i < shots.size(); i++) {
+                        float[] shotCoordinates = shots.get(i);
+                        Shot shot = new Shot();
+                        shot.setEngagement(engagement);
+                        shot.setxOffset(shotCoordinates[0]);
+                        shot.setyOffset(shotCoordinates[1]);
+                        shot.setSequence(i);
+                        shotDao.create(shot);
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    throw new RuntimeException(ex);
+                }
+                loadNameSpinner();
 
             }
         });
@@ -86,12 +135,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
-        Button viewButton = (Button) findViewById(R.id.viewEngagements);
-        viewButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
 
-            }
-        });
+        ((SeekBar) findViewById(R.id.windageValue)).setOnSeekBarChangeListener(this);
+
+        ((SeekBar) findViewById(R.id.elevationValue)).setOnSeekBarChangeListener(this);
 
         final ImageView iv = (ImageView) findViewById(R.id.Compass);
 
@@ -106,11 +153,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 float deltaX = event.getX() - xCenter;
                 float deltaY = event.getY() - yCenter;
                 double r = Math.hypot(deltaX, deltaY);
-                double speed = 30 * Math.min(2 * r / width, 1);
-                double angle = 180 / Math.PI * Math.atan2(deltaX, -deltaY);
+               speed = 30 * Math.min(2 * r / width, 1);
+               angle = 180 / Math.PI * Math.atan2(deltaX, -deltaY);
 
 //                int arrowIndex = ((int) Math.round(angle / 45) + 8) % 8;
-
 
                 //TODO Figure out which character to use.
                 Bitmap base = BitmapFactory.decodeResource(getResources(), R.drawable.compass);
@@ -124,12 +170,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Canvas c = new Canvas(newImage);
                 c.drawBitmap(base, 0, 0, null);
 
-
                 Paint paint = new Paint();
                 paint.setColor(Color.RED);
                 paint.setStyle(Paint.Style.FILL);
                 paint.setStrokeWidth(10.0f);
-
                 paint.setTextSize(60);
 //                c.drawText(ARROWS, arrowIndex, 1, event.getX() + 39, event.getY() + 39, paint);
 //                Drawable arrowhead = ResourcesCompat.getDrawable(getResources(), R.drawable.arrowhead, null);
@@ -181,31 +225,27 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 } else {
                     shots.add(new float[]{xOffset, yOffset});
                 }
+
                 float xCenter = width / 2.0f;
                 float yCenter = height / 2.0f;
                 float deltaX = event.getX() - xCenter;
                 float deltaY = event.getY() - yCenter;
                 double r = Math.hypot(deltaX, deltaY);
-//                double speed = 30 * Math.min(2 * r / width, 1);
-//                double angle = 180 / Math.PI * Math.atan2(deltaX, -deltaY);
-
                 Bitmap base = getBitmap(currentStyle.getImage());
                 Bitmap.Config config = base.getConfig();
                 int baseWidth = base.getWidth();
                 int baseHeight = base.getHeight();
                 float scaledXcenter = targetView.getScaleX() * xCenter;
                 float scaledYcenter = targetView.getScaleY() * yCenter;
-
                 Bitmap newImage = Bitmap.createBitmap(baseWidth, baseHeight, config);
                 Canvas c = new Canvas(newImage);
                 c.drawBitmap(base, 0, 0, null);
-
                 Paint paint = new Paint();
                 paint.setColor(Color.BLUE);
 //                paint.setStrokeWidth(10);
 //                c.scale(targetView.getScaleX(), targetView.getScaleY());
                 for (float[] shot : shots) {
-                    c.drawOval(c.getWidth() * (shot[0] + 0.5f) - 5,
+                            c.drawOval(c.getWidth() * (shot[0] + 0.5f) - 5,
                             c.getHeight() * (shot[1] + 0.5f) - 5,
                             c.getWidth() * (shot[0] + 0.5f) + 5,
                             c.getHeight() * (shot[1] + 0.5f) + 5, paint);
@@ -214,14 +254,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 targetView.setImageBitmap(newImage);
 
                 return true;
-
             }
         });
-
-        ((SeekBar) findViewById(R.id.windageValue)).setOnSeekBarChangeListener(this);
-
-        ((SeekBar) findViewById(R.id.elevationValue)).setOnSeekBarChangeListener(this);
-
     }
 
     DBHelper dbHelper = null;
@@ -235,14 +269,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private synchronized void releaseHelper() {
         if (dbHelper != null) {
-            releaseHelper();
+            OpenHelperManager.releaseHelper();
             dbHelper = null;
         }
     }
 
-
-    //        Log.d("ListView", "onCreate");
-//        setContentView(R.layout.simple_spinner_item);
     protected void fuckYou() {
         try {
             Dao<TargetStyle, Integer> dao = getHelper().getTargetStyleDao();
@@ -263,36 +294,59 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    protected void weight() {
-
-        Spinner bulletWeight = (Spinner) findViewById(R.id.bulletWeight);
-        String[] weights = getResources().getStringArray(R.array.bulletWeights);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, weights);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        bulletWeight.setAdapter(adapter);
-    }
+//    protected void weight() {
+//
+//        Spinner saved = (Spinner) findViewById(R.id.savedEngagements);
+//        String[] weights = getResources().getStringArray(R.array.bulletWeights);
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, weights);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        saved.setAdapter(adapter);
+//    }
 
     protected void distance() {
 
-        Spinner bulletWeight = (Spinner) findViewById(R.id.distance);
+        Spinner distance = (Spinner) findViewById(R.id.distance);
         String[] distances = getResources().getStringArray(R.array.distances);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, distances);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        bulletWeight.setAdapter(adapter);
+        distance.setAdapter(adapter);
+    }
+
+    private void loadNameSpinner() {
+
+        Spinner saved = (Spinner) findViewById(R.id.savedEngagements);
+        try {
+            Dao<Engagement, Integer> engagementDao = getHelper().getEngagementDao();
+            QueryBuilder<Engagement, Integer> builder = engagementDao.queryBuilder();
+            builder.orderBy("CREATED", false).orderBy("ENGAGEMENT_NAME", true);
+            List<Engagement> engagements = engagementDao.query(builder.prepare());
+            ArrayAdapter<Engagement> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, engagements);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            saved.setAdapter(adapter);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 
     @Override
-    protected void onDestroy() {
+    protected void onStop() {
         releaseHelper();
-        super.onDestroy();
+        super.onStop();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getHelper();
     }
 
     private Bitmap getBitmap(String name) {
         int resourceID = getResources().getIdentifier(name, "drawable", getPackageName());
         return BitmapFactory.decodeResource(getResources(), resourceID);
     }
-
 
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
@@ -311,15 +365,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onRadioButtonClicked(View view) {
         boolean checked = ((RadioButton) view).isChecked();
         switch (view.getId()) {
-            case R.id.length18:
+            case R.id.length16:
                 if (checked)
                     break;
-            case R.id.length20:
+            case length20:
                 if (checked)
                     break;
         }
     }
-
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -341,14 +394,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-
-
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
     }
-
-
 
 }
 
