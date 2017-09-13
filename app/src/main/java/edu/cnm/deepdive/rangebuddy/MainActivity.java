@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -37,10 +39,11 @@ import edu.cnm.deepdive.rangebuddy.helpers.AndroidDatabaseManager;
 import edu.cnm.deepdive.rangebuddy.helpers.DBHelper;
 import edu.cnm.deepdive.rangebuddy.views.TestActivity;
 
-import static edu.cnm.deepdive.rangebuddy.R.id.length20;
-import static java.lang.Math.round;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, SeekBar.OnSeekBarChangeListener {
+import static java.lang.Math.round;
+import static java.lang.Math.sin;
+// , SeekBar.OnSeekBarChangeListener code for seekbars that were taken out
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private static final double TOLERANCE = 0.1d;
     //    private static final char[] ARROWS = {'\u21D1', '\u21D7', '\u21D2', '\u21D8', '\u21D3', '\u21D9', '\u21D0', '\u21D6'};
@@ -51,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     Engagement currentWeight = null;
     double speed = 0;
     double angle = 0;
+    double windFactor = 0;
+    int range = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         getHelper().getWritableDatabase().close();
         fuckYou();
         loadNameSpinner();
-        distance();
+        loadDistanceSpinner();
 
         Button button = (Button) findViewById(R.id.DBMButton);
         button.setOnClickListener(new View.OnClickListener() {
@@ -101,12 +106,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     ImageView compass = (ImageView) findViewById(R.id.Compass);
                     engagement.setWindDir((int)Math.round(angle));
                     engagement.setWindSpeed((int) speed);
-                    SeekBar rawWindage = ((SeekBar) findViewById(R.id.windageValue));
-                    double realWindage = rawWindage.getProgress() / 100d + 1;
-                    engagement.setClickValueWindage(realWindage);
-                    SeekBar rawElevation = ((SeekBar) findViewById(R.id.elevationValue));
-                    double realElevation = rawElevation.getProgress() / 100d + 1;
-                    engagement.setClickValueElevate(realElevation);
+//                    SeekBar rawWindage = ((SeekBar) findViewById(R.id.windageValue));
+//                    double realWindage = rawWindage.getProgress() / 100d + 1;
+//                    engagement.setClickValueWindage(realWindage);
+//                    SeekBar rawElevation = ((SeekBar) findViewById(R.id.elevationValue));
+//                    double realElevation = rawElevation.getProgress() / 100d + 1;
+//                    engagement.setClickValueElevate(realElevation);
                     Spinner style = (Spinner) findViewById(R.id.targetStyle);
                     engagement.setTargetStyle(currentStyle);
                     engagementDao.create(engagement);
@@ -135,10 +140,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
-
-        ((SeekBar) findViewById(R.id.windageValue)).setOnSeekBarChangeListener(this);
-
-        ((SeekBar) findViewById(R.id.elevationValue)).setOnSeekBarChangeListener(this);
+//Decided not to use these seekbars
+//        ((SeekBar) findViewById(R.id.windageValue)).setOnSeekBarChangeListener(this);
+//
+//        ((SeekBar) findViewById(R.id.elevationValue)).setOnSeekBarChangeListener(this);
 
         final ImageView iv = (ImageView) findViewById(R.id.Compass);
 
@@ -153,13 +158,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 float deltaX = event.getX() - xCenter;
                 float deltaY = event.getY() - yCenter;
                 double r = Math.hypot(deltaX, deltaY);
-               speed = 30 * Math.min(2 * r / width, 1);
-               angle = 180 / Math.PI * Math.atan2(deltaX, -deltaY);
+                speed = 30 * Math.min(2 * r / width, 1);
+                angle = 180 / Math.PI * Math.atan2(deltaX, -deltaY);
+                windFactor = Math.pow(Math.sin(angle * Math.PI / 180), 2);
+                updateClickDisplay();
 
 //                int arrowIndex = ((int) Math.round(angle / 45) + 8) % 8;
 
                 //TODO Figure out which character to use.
-                Bitmap base = BitmapFactory.decodeResource(getResources(), R.drawable.compass);
+                Bitmap base = BitmapFactory.decodeResource(getResources(), R.drawable.clock6);
                 Bitmap.Config config = base.getConfig();
                 int baseWidth = base.getWidth();
                 int baseHeight = base.getHeight();
@@ -187,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 //                Log.d("Compass click", "Location: " + event.getX() + " , " + event.getY());
 //                Log.d("Compass click", String.format("Vector: (%f, %f)%n", speed, angle));
                 TextView values = (TextView) findViewById(R.id.dirSpeedValues);
-                values.setText(String.format("Touch compass for values: %n Drag line for better accuracy %n wind speed:  wind direction: %n (Mph %.2f, Direction %.2f)%n", speed, angle));
+                values.setText(String.format("Touch clockface to set values: %n Drag line for better accuracy %n wind speed:  wind direction: %n (Mph %.2f, Direction %.2f)%n", speed, angle));
 
                 return true;
             }
@@ -204,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 float yShot = event.getY();
                 float xOffset = (xShot / width) - 0.5f;
                 float yOffset = (yShot / height) - 0.5f;
-                //TODO iterate over shots to see if distance between any shot and xOffset yOffset less than some tolerance.
+                //TODO iterate over shots to see if loadDistanceSpinner between any shot and xOffset yOffset less than some tolerance.
 
                 Switch removeMode = (Switch) findViewById(R.id.removeSwitch);
                 boolean inRemoveMode = removeMode.isChecked();
@@ -256,6 +263,37 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 return true;
             }
         });
+
+        ((Spinner)findViewById(R.id.distance)).setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                range = Integer.parseInt((String) parent.getSelectedItem());
+                updateClickDisplay();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+
+        });
+        ((RadioGroup)findViewById(R.id.length)).setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                updateClickDisplay();
+            }
+        });
+    }
+
+    private void updateClickDisplay() {
+        double suggestedAdj = range * speed * windFactor / 1000;
+        if (((RadioButton) findViewById(R.id.length20)).isChecked()) {
+            suggestedAdj = suggestedAdj * 1.75;
+        } else {
+            suggestedAdj = suggestedAdj * .75 * 1.75;
+        }
+        ((EditText) findViewById(R.id.editText)).setText(String.format("%.2f", suggestedAdj));
     }
 
     DBHelper dbHelper = null;
@@ -303,13 +341,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 //        saved.setAdapter(adapter);
 //    }
 
-    protected void distance() {
+    protected void loadDistanceSpinner() {
 
         Spinner distance = (Spinner) findViewById(R.id.distance);
         String[] distances = getResources().getStringArray(R.array.distances);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, distances);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         distance.setAdapter(adapter);
+        range = Integer.parseInt(distances[0]);
     }
 
     private void loadNameSpinner() {
@@ -368,36 +407,37 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.length16:
                 if (checked)
                     break;
-            case length20:
+            case R.id.length20:
                 if (checked)
                     break;
         }
     }
 
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        switch (seekBar.getId()) {
-            case R.id.windageValue:
-                TextView view = (TextView) findViewById(R.id.windageValueDisplay);
-                view.setText(String.format("%3.2f", (progress + 100) / 100f));
-                break;
-            case R.id.elevationValue:
-                TextView view1 = (TextView) findViewById(R.id.elevationValueDisplay);
-                view1.setText(String.format("%3.2f", (progress + 100) / 100f));
-                break;
-        }
-
-    }
-
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-
-    }
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
-
-    }
+    // Code for seekbars that I decided not to use
+//    @Override
+//    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//        switch (seekBar.getId()) {
+//            case R.id.windageValue:
+//                TextView view = (TextView) findViewById(R.id.windageValueDisplay);
+//                view.setText(String.format("%3.2f", (progress + 100) / 100f));
+//                break;
+//            case R.id.elevationValue:
+//                TextView view1 = (TextView) findViewById(R.id.elevationValueDisplay);
+//                view1.setText(String.format("%3.2f", (progress + 100) / 100f));
+//                break;
+//        }
+//
+//    }
+//
+//    @Override
+//    public void onStartTrackingTouch(SeekBar seekBar) {
+//
+//    }
+//
+//    @Override
+//    public void onStopTrackingTouch(SeekBar seekBar) {
+//
+//    }
 
 }
 
