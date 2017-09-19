@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 //                Log.d("Compass click", "Location: " + event.getX() + " , " + event.getY());
 //                Log.d("Compass click", String.format("Vector: (%f, %f)%n", speed, angle));
                 TextView values = (TextView) findViewById(R.id.dirSpeedValues);
-                values.setText(String.format("Touch clockface to set values: %n Drag line for better accuracy %n wind speed:  wind direction: %n (Mph %.2f, Direction %.2f)%n", speed, angle));
+                values.setText(String.format("touch clockface to set values: %n drag line for better accuracy %n wind speed:  wind direction: %n (Mph %.2f, Direction %.2f)%n", speed, angle));
 
                 return true;
             }
