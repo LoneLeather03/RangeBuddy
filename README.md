@@ -4,4 +4,4 @@ Personal Android class project. An app that calculates windage and elevation cor
 
 The app is mostly functional, but incomplete. I am still working on appending the text "LEFT" or "RIGHT" to the windage adjustment suggestion. Currently the user must know to adjust in the opposite direction of the wind. The CLEAR button does not yet work, but will clear the users current input for a fresh start. Lastly, while you can currently save engagements in the database they cannot currently be viewed. 
 
-Again, the most important aspects of the app are functional it just needs a few things finished. I'm still working on it, but it is demonstratable.
+Again, the most important aspects of the app are functional it just needs a few things finished. I'm still working on it, but it is demonstratable. Once I complete the tasks stated above I would consider this app complete. Though, I do have additional ideas for it.
