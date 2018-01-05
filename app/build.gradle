@@ -5,11 +5,15 @@ def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
+    lintOptions {
+        abortOnError false
+    }
     signingConfigs {
         config1 {
-              keyAlias keystoreProperties['keyAlias']
-              keyPassword keystoreProperties['keyPassword']
-              storeFile file (keystoreProperties['storeFile'])
+            keyAlias 'Key0'
+            keyPassword 'FuckFace03'
+            storeFile file('C:/Users/crazy/Desktop/Java Bootcamp/credentials/keystores/MyAndroidKey.jks')
+            storePassword 'FuckFace03'
 //            keyAlias 'MyAndroidKey'
 //            keyPassword ''
 //            storeFile file('C:/Users/crazy/Desktop/Java Bootcamp/credentials/keystores/MyAndroidKey.jks')
