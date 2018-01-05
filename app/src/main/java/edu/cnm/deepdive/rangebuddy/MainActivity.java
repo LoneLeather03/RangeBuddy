@@ -294,6 +294,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             suggestedAdj = suggestedAdj * .75 * 1.75;
         }
         ((EditText) findViewById(R.id.editText)).setText(String.format("%.2f", suggestedAdj));
+
     }
 
     DBHelper dbHelper = null;
