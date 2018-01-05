@@ -11,9 +11,9 @@ android {
     signingConfigs {
         config1 {
             keyAlias 'Key0'
-            keyPassword 'FuckFace03'
+            keyPassword ''
             storeFile file('C:/Users/crazy/Desktop/Java Bootcamp/credentials/keystores/MyAndroidKey.jks')
-            storePassword 'FuckFace03'
+            storePassword ''
 //            keyAlias 'MyAndroidKey'
 //            keyPassword ''
 //            storeFile file('C:/Users/crazy/Desktop/Java Bootcamp/credentials/keystores/MyAndroidKey.jks')
