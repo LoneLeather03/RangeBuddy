@@ -9,14 +9,12 @@ android {
         abortOnError false
     }
     signingConfigs {
-        config1 {
-            keyAlias 'Key0'
-            keyPassword ''
-            storeFile file('C:/Users/crazy/Desktop/Java Bootcamp/credentials/keystores/MyAndroidKey.jks')
-            storePassword ''
-//            keyAlias 'MyAndroidKey'
-//            keyPassword ''
-//            storeFile file('C:/Users/crazy/Desktop/Java Bootcamp/credentials/keystores/MyAndroidKey.jks')
+
+        configNew {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
         }
     }
     compileSdkVersion 25
@@ -28,16 +26,16 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        signingConfig signingConfigs.config1
+        signingConfig signingConfigs.configNew
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.configNew
+            zipAlignEnabled true
         }
-        release1 {
-            signingConfig signingConfigs.config1
-        }
+
     }
     productFlavors {
     }
