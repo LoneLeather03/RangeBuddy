@@ -14,7 +14,6 @@ import java.util.List;
 
 import edu.cnm.deepdive.rangebuddy.R;
 import edu.cnm.deepdive.rangebuddy.entities.TargetStyle;
-import edu.cnm.deepdive.rangebuddy.helpers.AndroidDatabaseManager;
 import edu.cnm.deepdive.rangebuddy.helpers.DBHelper;
 import edu.cnm.deepdive.rangebuddy.R;
 

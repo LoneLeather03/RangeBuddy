@@ -17,9 +17,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".helpers.AndroidDatabaseManager"
-            android:theme="@style/Theme.AppCompat.Light" />
         <activity android:name=".views.TestActivity"></activity>
     </application>
 

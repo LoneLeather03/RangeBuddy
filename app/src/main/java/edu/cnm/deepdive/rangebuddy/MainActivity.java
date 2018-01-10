@@ -35,7 +35,6 @@ import java.util.List;
 import edu.cnm.deepdive.rangebuddy.entities.Engagement;
 import edu.cnm.deepdive.rangebuddy.entities.Shot;
 import edu.cnm.deepdive.rangebuddy.entities.TargetStyle;
-import edu.cnm.deepdive.rangebuddy.helpers.AndroidDatabaseManager;
 import edu.cnm.deepdive.rangebuddy.helpers.DBHelper;
 import edu.cnm.deepdive.rangebuddy.views.TestActivity;
 
@@ -71,8 +70,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Button button = (Button) findViewById(R.id.DBMButton);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent dbmanager = new Intent(MainActivity.this, AndroidDatabaseManager.class);
-                startActivity(dbmanager);
+//                Intent dbmanager = new Intent(MainActivity.this, AndroidDatabaseManager.class);
+//                startActivity(dbmanager);
             }
         });
 
